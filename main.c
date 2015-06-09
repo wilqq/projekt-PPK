@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
+#include <ctype.h>
 
 #define LENGTH 100
 
@@ -15,6 +16,18 @@ typedef struct element { //definicja typu elementu listy
     u_list_el *under;
  } list_el;
 
+int get_files_names(int argc, char ** argv, char **input_file_name, char **output_file_name);
+int read_file(FILE* plik, list_el** head);
+void add_to_list(list_el** head, char *word, char *author, char *title);
+void add_to_u_list(list_el* label_head, char *author, char *title);
+void clean_memory(list_el** head);
+void clean_u_memory(list_el* label_head);
+void save_list(char *file_name, list_el *head);
+void save_u_list(FILE* output, u_list_el *u_head);
+void print_list(list_el *head);
+void print_u_list(u_list_el *u_head);
+void strip(char *str);
+int check_filename_ext(char *filename);
 
 
 int main(int argc, char ** argv)
@@ -40,7 +53,7 @@ int main(int argc, char ** argv)
         return 0;
     }
     if(read_file(input, &head) == 0) {
-        print_list(*head);
+        print_list(head);
         save_list("wy.txt", head);
     } else {
         printf("Plik ma niepoprawny format!\n");
@@ -76,7 +89,7 @@ int get_files_names(int argc, char ** argv, char **input_file_name, char **outpu
 int read_file(FILE* plik, list_el** head)
 {
     char *token;
-    char line[LENGTH], author[LENGTH], title[LENGTH], labels[LENGTH], label[LENGTH];
+    char author[LENGTH], title[LENGTH], labels[LENGTH], label[LENGTH];
     int a_read, t_read, l_read;
 
     while(!feof(plik)) {
@@ -241,7 +254,8 @@ void print_u_list(u_list_el *u_head)
     }
 }
 
-void strip(char *str) {
+void strip(char *str)
+{
     char  *tmp = str;
     int length = strlen(tmp);
 
@@ -251,10 +265,11 @@ void strip(char *str) {
     memmove(str, tmp, length + 1);
 }
 
-int check_filename_ext(char *filename) {
+int check_filename_ext(char *filename)
+{
     char *dot = strrchr(filename, '.');
     if(strcmp(dot, ".txt") == 0)
         return 0;
     else
-        return dot + 1;
+        return 1;
 }
