@@ -44,15 +44,24 @@ int read_file(FILE* plik, list_el** head)
 {
     char *token;
     char line[LENGTH], author[LENGTH], title[LENGTH], labels[LENGTH], label[LENGTH];
+    int a_read, t_read, l_read;
+
     while(!feof(plik)) {
-        fscanf(plik, "%[^;];", author);
-        fscanf(plik, "%[^;];", title);
-        fscanf(plik, "%[^\n];", labels);
+        a_read = fscanf(plik, "%[^;];", author);
+        t_read = fscanf(plik, "%[^;];", title);
+        l_read = fscanf(plik, "%[^\n];", labels);
         fscanf(plik, "\n");
 
-        if(strcmp(author, "") == 0 || strcmp(title, "") == 0 || strcmp(labels, "") == 0){
+        strip(author);
+        strip(title);
+        strip(labels);
+
+        if(a_read == 0 || t_read == 0 || l_read == 0)
             return -1;
-        }
+
+        if(strcmp(author, "") == 0 || strcmp(title, "") == 0 || strcmp(labels, "") == 0)
+            return -1;
+
 
         token = strtok(labels, ", ");
         while(token != NULL) {
@@ -106,7 +115,7 @@ void add_to_u_list(list_el* label_head, char *author, char *title)
 {
     char line[LENGTH];
     strcpy(line, author);
-    strcat(line, ";");
+    strcat(line, "; ");
     strcat(line, title);
     u_list_el *wsk, *prev, *new_el;
 
@@ -196,5 +205,15 @@ void print_u_list(u_list_el *u_head)
         printf ("- -%s-\n", wsk->line);
         wsk = wsk->next;
     }
+}
+
+void strip(char *str) {
+    char  *tmp = str;
+    int length = strlen(tmp);
+
+    while(isspace(tmp[length - 1])) tmp[--length] = 0;
+    while(*tmp && isspace(*tmp)) ++tmp, --length;
+
+    memmove(str, tmp, length + 1);
 }
 

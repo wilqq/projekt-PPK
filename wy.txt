@@ -1,0 +1,32 @@
+barok
+Shakespeare; Hamlet
+
+filozofia
+Akwinata; Dumma Teologiczna
+Akwinata; Summa Teologiczna
+Akwinata; xyz Teologiczna
+Platon; Uczta
+
+informatyka
+Cormen; Algorytmy
+
+klasyka
+Mickiewicz; Pan Tadeusz
+
+lektura
+Mickiewicz; Pan Tadeusz
+
+podrecznik
+Cormen; Algorytmy
+
+romantyzm
+Mickiewicz; Pan Tadeusz
+
+sredniowiecze
+Akwinata; Dumma Teologiczna
+Akwinata; Summa Teologiczna
+Akwinata; xyz Teologiczna
+
+tragedia
+Shakespeare; Hamlet
+
