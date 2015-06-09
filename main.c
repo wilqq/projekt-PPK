@@ -4,40 +4,73 @@
 
 #define LENGTH 100
 
-typedef struct u_element {
+typedef struct u_element { //definicja typu elementu listy podwieszanej
    struct u_element *next;
    char line[LENGTH];
  } u_list_el;
 
-typedef struct element {
+typedef struct element { //definicja typu elementu listy
     struct element *next;
-    char label[80];
+    char label[LENGTH];
     u_list_el *under;
  } list_el;
 
 
 
-int main()
+int main(int argc, char ** argv)
 {
     list_el *head = NULL;
     FILE *input;
-    input = fopen("we.txt", "r");
+    char *input_file_name, *output_file_name;
 
-    if(input != NULL) {
-        if(read_file(input, &head) == 0) {
-            print_list(*head);
-            save_list("wy.txt", head);
-        } else {
-            printf("Plik ma niepoprawny format!\n");
-        }
-        fclose(input);
-        clean_memory(&head);
-
+    if(get_files_names(argc, argv, &input_file_name, &output_file_name) != 0) {
+        printf("Niewlasciwe parametry programu!\n");
+        return 0;
     }
-    else
+
+    if(check_filename_ext(input_file_name) != 0) {
+        printf("Plik ma niewlasciwe rozszerzenie!\n");
+        return 0;
+    }
+
+    input = fopen(input_file_name, "r");
+
+    if(input == NULL) {
         printf("Nie udalo sie otworzyc pliku!\n");
+        return 0;
+    }
+    if(read_file(input, &head) == 0) {
+        print_list(*head);
+        save_list("wy.txt", head);
+    } else {
+        printf("Plik ma niepoprawny format!\n");
+    }
+    fclose(input);
+    clean_memory(&head);
 
     return 0;
+}
+
+int get_files_names(int argc, char ** argv, char **input_file_name, char **output_file_name)
+{
+    int i, input_set = 0, output_set = 0;
+    for(i = 0; i < argc; i++) {
+        if(strcmp(argv[i], "-i") == 0) {
+            *input_file_name = argv[++i];
+            input_set = 1;
+            continue;
+        }
+
+        if(strcmp(argv[i], "-o") == 0) {
+            *output_file_name = argv[++i];
+            output_set = 1;
+        }
+    }
+
+    if(input_set == 1 && output_set == 1)
+        return 0;
+
+    return -1;
 }
 
 int read_file(FILE* plik, list_el** head)
@@ -175,6 +208,7 @@ void save_list(char *file_name, list_el *head)
         fprintf(output, "\n");
         wsk = wsk->next;
     }
+    fclose(output);
 }
 
 void save_u_list(FILE* output, u_list_el *u_head)
@@ -217,3 +251,10 @@ void strip(char *str) {
     memmove(str, tmp, length + 1);
 }
 
+int check_filename_ext(char *filename) {
+    char *dot = strrchr(filename, '.');
+    if(strcmp(dot, ".txt") == 0)
+        return 0;
+    else
+        return dot + 1;
+}
