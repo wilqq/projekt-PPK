@@ -24,9 +24,15 @@ int main()
     input = fopen("we.txt", "r");
 
     if(input != NULL) {
-        read_file(input, &head);
+        if(read_file(input, &head) == 0) {
+            print_list(*head);
+            save_list("wy.txt", head);
+        } else {
+            printf("Plik ma niepoprawny format!\n");
+        }
         fclose(input);
-        save_list("wy.txt", head);
+        clean_memory(&head);
+
     }
     else
         printf("Nie udalo sie otworzyc pliku!\n");
@@ -34,7 +40,7 @@ int main()
     return 0;
 }
 
-void read_file(FILE* plik, list_el** head)
+int read_file(FILE* plik, list_el** head)
 {
     char *token;
     char line[LENGTH], author[LENGTH], title[LENGTH], labels[LENGTH], label[LENGTH];
@@ -44,6 +50,10 @@ void read_file(FILE* plik, list_el** head)
         fscanf(plik, "%[^\n];", labels);
         fscanf(plik, "\n");
 
+        if(strcmp(author, "") == 0 || strcmp(title, "") == 0 || strcmp(labels, "") == 0){
+            return -1;
+        }
+
         token = strtok(labels, ", ");
         while(token != NULL) {
             strcpy(label, token);
@@ -51,6 +61,7 @@ void read_file(FILE* plik, list_el** head)
             token = strtok(NULL, ", ");
         }
     }
+    return 0;
 }
 
 void add_to_list(list_el** head, char *word, char *author, char *title)
@@ -89,7 +100,6 @@ void add_to_list(list_el** head, char *word, char *author, char *title)
         }
     }
     add_to_u_list(new_el, author, title);
-    print_list(*head);
 }
 
 void add_to_u_list(list_el* label_head, char *author, char *title)
@@ -119,6 +129,31 @@ void add_to_u_list(list_el* label_head, char *author, char *title)
         prev->next = new_el;
     }
 }
+
+void clean_memory(list_el** head)
+{
+    list_el *wsk, *prev;
+    wsk = *head;
+    while(wsk != NULL) {
+        prev = wsk;
+        wsk = wsk->next;
+        clean_u_memory(prev);
+        free(prev);
+    }
+    *head = NULL;
+}
+
+void clean_u_memory(list_el* label_head)
+{
+    u_list_el *wsk, *prev;
+    wsk = label_head->under;
+    while(wsk != NULL) {
+        prev = wsk;
+        wsk = wsk->next;
+        free(prev);
+    }
+}
+
 
 void save_list(char *file_name, list_el *head)
 {
@@ -162,3 +197,4 @@ void print_u_list(u_list_el *u_head)
         wsk = wsk->next;
     }
 }
+
