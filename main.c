@@ -20,13 +20,14 @@ typedef struct element {
 int main()
 {
     list_el *head = NULL;
-    FILE *input, *output;
+    FILE *input;
     input = fopen("we.txt", "r");
 
     if(input != NULL)
     {
         parse_file(input, &head);
         fclose(input);
+        save_list("wy.txt", head);
     }
     else
     {
@@ -133,6 +134,31 @@ void add_to_u_list(list_el* label_head, char *author, char *title)
         prev->next = new_el;
     }
 }
+
+ void save_list(char *file_name, list_el *head)
+ {
+    FILE *output;
+    output = fopen(file_name, "w");
+    list_el *wsk = head;
+    while( wsk != NULL )
+     {
+     fprintf(output, "%s\n", wsk->label);
+     save_u_list(output, wsk->under);
+     fprintf(output, "\n");
+     wsk = wsk->next;
+     }
+ }
+
+  void save_u_list(FILE* output, u_list_el *head)
+ {
+   u_list_el *wsk = head;
+   while( wsk != NULL )
+     {
+     fprintf(output, "%s\n", wsk->line);
+     wsk = wsk->next;
+     }
+ }
+
 
  void print_list(list_el *head)
  {
