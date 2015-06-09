@@ -51,7 +51,7 @@ void parse_file(FILE* plik, list_el** head)
         while(token != NULL) {
             strcpy(label, token);
             add_to_list(head, label, author, title);
-            token = strtok(NULL, ",");
+            token = strtok(NULL, ", ");
         }
     }
 }
