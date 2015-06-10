@@ -24,8 +24,6 @@ void clean_memory(list_el** head);
 void clean_u_memory(list_el* label_head);
 void save_list(char *file_name, list_el *head);
 void save_u_list(FILE* output, u_list_el *u_head);
-void print_list(list_el *head);
-void print_u_list(u_list_el *u_head);
 void strip(char *str);
 int check_filename_ext(char *filename);
 
@@ -53,7 +51,6 @@ int main(int argc, char ** argv)
         return 0;
     }
     if(read_file(input, &head) == 0) {
-        print_list(head);
         save_list("wy.txt", head);
     } else {
         printf("Plik ma niepoprawny format!\n");
@@ -222,7 +219,7 @@ void save_list(char *file_name, list_el *head)
     output = fopen(file_name, "w");
 
     if(output == NULL) {
-        printf("Nie udalo sie otworzyc pliku %s!\n", file_name);
+        printf("Nie udalo sie zapisac do pliku %s!\n", file_name);
         return;
     }
 
@@ -234,6 +231,7 @@ void save_list(char *file_name, list_el *head)
         wsk = wsk->next;
     }
     fclose(output);
+    printf("Dane zostaly zapisane do pliku %s\n", file_name);
     return;
 }
 
@@ -242,27 +240,6 @@ void save_u_list(FILE* output, u_list_el *u_head)
     u_list_el *wsk = u_head;
     while( wsk != NULL ) {
         fprintf(output, "%s\n", wsk->line);
-        wsk = wsk->next;
-    }
-}
-
-
-void print_list(list_el *head)
-{
-    printf("\n");
-    list_el *wsk = head;
-    while( wsk != NULL ) {
-        printf ("-%s-\n", wsk->label);
-        print_u_list(wsk->under);
-        wsk = wsk->next;
-    }
-}
-
-void print_u_list(u_list_el *u_head)
-{
-    u_list_el *wsk = u_head;
-    while( wsk != NULL ) {
-        printf ("- -%s-\n", wsk->line);
         wsk = wsk->next;
     }
 }
@@ -289,5 +266,5 @@ int check_filename_ext(char *filename)
     if(strcmp(dot, ".txt") == 0)
         return 0;
     else
-        return 1;
+        return -1;
 }
