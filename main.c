@@ -42,14 +42,14 @@ int main(int argc, char ** argv)
     }
 
     if(check_filename_ext(input_file_name) != 0) {
-        printf("Plik ma niewlasciwe rozszerzenie!\n");
+        printf("Plik %s ma niewlasciwe rozszerzenie!\n", input_file_name);
         return 0;
     }
 
     input = fopen(input_file_name, "r");
 
     if(input == NULL) {
-        printf("Nie udalo sie otworzyc pliku!\n");
+        printf("Nie udalo sie otworzyc pliku %s!\n", input_file_name);
         return 0;
     }
     if(read_file(input, &head) == 0) {
@@ -213,7 +213,19 @@ void clean_u_memory(list_el* label_head)
 void save_list(char *file_name, list_el *head)
 {
     FILE *output;
+
+    if(check_filename_ext(file_name) != 0) {
+        printf("Plik ma %s niewlasciwe rozszerzenie!\n", file_name);
+        return;
+    }
+
     output = fopen(file_name, "w");
+
+    if(output == NULL) {
+        printf("Nie udalo sie otworzyc pliku %s!\n", file_name);
+        return;
+    }
+
     list_el *wsk = head;
     while( wsk != NULL ) {
         fprintf(output, "%s\n", wsk->label);
@@ -222,6 +234,7 @@ void save_list(char *file_name, list_el *head)
         wsk = wsk->next;
     }
     fclose(output);
+    return;
 }
 
 void save_u_list(FILE* output, u_list_el *u_head)
@@ -259,8 +272,13 @@ void strip(char *str)
     char  *tmp = str;
     int length = strlen(tmp);
 
-    while(isspace(tmp[length - 1])) tmp[--length] = 0;
-    while(*tmp && isspace(*tmp)) ++tmp, --length;
+    while(isspace(tmp[length - 1]))
+        tmp[--length] = 0;
+
+    while(*tmp && isspace(*tmp)) {
+        tmp++;
+        length--;
+    }
 
     memmove(str, tmp, length + 1);
 }
