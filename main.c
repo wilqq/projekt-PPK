@@ -119,7 +119,7 @@ int read_file(FILE* plik, list_el** head)
 void add_to_list(list_el** head, char *word, char *author, char *title)
 {
     list_el *wsk, *prev, *new_el;
-    if((*head) == NULL) {
+    if((*head) == NULL) { // sprawdzenie, czy lista jest pusta
         new_el = malloc (sizeof(list_el));
         strcpy(new_el->label, word);
         new_el->next = NULL;
@@ -127,7 +127,7 @@ void add_to_list(list_el** head, char *word, char *author, char *title)
         *head = new_el;
     }
     else {
-        if(strcmp((*head)->label, word) > 0) {
+        if(strcmp((*head)->label, word) > 0) { // sprawdzenie, czy obecny element powinien byæ umieszczony przed g³ow¹ listy
             new_el = malloc (sizeof(list_el));
             new_el->under = NULL;
             strcpy(new_el->label, word);
@@ -136,22 +136,22 @@ void add_to_list(list_el** head, char *word, char *author, char *title)
         }
         else {
             wsk = *head;
-            while (wsk != NULL && strcmp(wsk->label, word) < 0) {
-                prev = wsk;
+            while (wsk != NULL && strcmp(wsk->label, word) < 0) { // przechodzenie do nastêpnego elementu listy
+                prev = wsk;                // dopóki nie znajdzimy elementu o który powinien byæ przed wstawianym
                 wsk = wsk->next;
             }
-            if(wsk == NULL || strcmp(wsk->label, word)) {
-                new_el = malloc (sizeof(list_el));
+            if(wsk == NULL || strcmp(wsk->label, word)) { // sprawdzenie czy nie trafiliœmy na koniec lisu lub czy znaleziony
+                new_el = malloc (sizeof(list_el));        // element nie jest taki sam jak wstawianay
                 new_el->under = NULL;
                 strcpy(new_el->label, word);
                 new_el->next = wsk;
                 prev->next = new_el;
             }
-            else
+            else        // obs³uga gdy w liœcie istnieje element, który mamy wstawiæ
                 new_el = wsk;
         }
     }
-    add_to_u_list(new_el, author, title);
+    add_to_u_list(new_el, author, title); // dodanie do podlisty
 }
 
 void add_to_u_list(list_el* label_head, char *author, char *title)
